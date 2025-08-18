@@ -11,5 +11,11 @@ declare namespace NodeJS {
     REDIS_URL: string;
     // Auth
     OTP_EXPIRATION_MINUTES: number;
+    // Smtp
+    SMTP_HOST: string;
+    SMTP_PORT: number;
+    SMTP_SECURE: boolean;
+    SMTP_PASSWORD: string;
+    SMTP_USERNAME: string;
   }
 }

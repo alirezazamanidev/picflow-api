@@ -14,6 +14,5 @@ export class AuthController {
   @ApiConsumes(ContentTypeEnum.Form,ContentTypeEnum.Json)
   signUp(@Body() dto:SignUpDto){
     return  this.authService.signUp(dto);
-
   }
 }

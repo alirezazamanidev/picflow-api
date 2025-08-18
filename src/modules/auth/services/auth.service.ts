@@ -10,13 +10,15 @@ import { SignUpDto } from '../dtos/signUp.dto';
 import { hashSync } from 'bcrypt';
 import { OtpService } from './otp.service';
 import { AuthMessages } from 'src/common/enums/messages.enum';
+import { MailerService } from './mailer.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private readonly otpService:OtpService
+    private readonly otpService:OtpService,
+    private readonly mailerService:MailerService
   ) {}
 
   async signUp(dto: SignUpDto) {
@@ -47,10 +49,12 @@ export class AuthService {
     });
     await this.userRepository.save(newUser);
     // create otp
-    const otpCode=await this.otpService.create(email);
+    const otpCode=await this.otpService.saveOtp(email);
+    // send otp
+    await this.mailerService.sendOtpForEmail(email,otpCode);
     return {
       message:AuthMessages.SentOtpCode,
-      otpCode
+      
     }
   }
 }
