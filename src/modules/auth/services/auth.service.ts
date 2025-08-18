@@ -7,18 +7,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from 'src/modules/user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { SignUpDto } from '../dtos/signUp.dto';
-import { hashSync } from 'bcrypt';
+import { hashSync, compareSync } from 'bcrypt';
 import { OtpService } from './otp.service';
 import { AuthMessages } from 'src/common/enums/messages.enum';
 import { MailerService } from './mailer.service';
+import { SignInDto } from '../dtos/signIn.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
-    private readonly otpService:OtpService,
-    private readonly mailerService:MailerService
+    private readonly otpService: OtpService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async signUp(dto: SignUpDto) {
@@ -45,16 +46,27 @@ export class AuthService {
       username,
       hashedPassword: hashSync(password, 15),
       email,
-      isEmailVerifyed:false
+      isEmailVerifyed: false,
     });
     await this.userRepository.save(newUser);
     // create otp
-    const otpCode=await this.otpService.saveOtp(email);
+    const otpCode = await this.otpService.saveOtp(email);
     // send otp
-    await this.mailerService.sendOtpForEmail(email,otpCode);
+    await this.mailerService.sendOtpForEmail(email, otpCode);
     return {
-      message:AuthMessages.SentOtpCode,
-      
-    }
+      message: AuthMessages.SentOtpCode,
+    };
+  }
+  async signIn(dto: SignInDto) {
+    const { email, password } = dto;
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user || !compareSync(password, user.hashedPassword))
+      throw new UnauthorizedException(AuthMessages.InvalidCredentials);
+    // create and send otp
+    const otpCode = await this.otpService.saveOtp(email);
+    await this.mailerService.sendOtpForEmail(email, otpCode);
+    return {
+      message: AuthMessages.SentOtpCode,
+    };
   }
 }
