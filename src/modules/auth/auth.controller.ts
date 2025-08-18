@@ -4,6 +4,7 @@ import { ApiConsumes, ApiOperation } from '@nestjs/swagger';
 import { SignUpDto } from './dtos/signUp.dto';
 import { ContentTypeEnum } from 'src/common/enums/form.enum';
 import { SignInDto } from './dtos/signIn.dto';
+import { CheckOtpDto } from './dtos/check-otp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -22,5 +23,13 @@ export class AuthController {
   @Post('signin')
   signin(@Body() dto: SignInDto) {
     return this.authService.signIn(dto);
+  }
+
+    @ApiOperation({ summary: 'check otp and verify email' })
+  @HttpCode(HttpStatus.OK)
+  @ApiConsumes(ContentTypeEnum.Form, ContentTypeEnum.Json)
+  @Post('check-otp')
+  checkOtp(@Body() dto: CheckOtpDto) {
+    return this.authService.checkOtp(dto);
   }
 }

@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,9 +10,11 @@ import { Repository } from 'typeorm';
 import { SignUpDto } from '../dtos/signUp.dto';
 import { hashSync, compareSync } from 'bcrypt';
 import { OtpService } from './otp.service';
-import { AuthMessages } from 'src/common/enums/messages.enum';
+import { AuthMessages, NotFoundMessage } from 'src/common/enums/messages.enum';
 import { MailerService } from './mailer.service';
 import { SignInDto } from '../dtos/signIn.dto';
+import { CheckOtpDto } from '../dtos/check-otp.dto';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
@@ -20,6 +23,7 @@ export class AuthService {
     private userRepository: Repository<UserEntity>,
     private readonly otpService: OtpService,
     private readonly mailerService: MailerService,
+    private readonly tokenService: TokenService,
   ) {}
 
   async signUp(dto: SignUpDto) {
@@ -67,6 +71,27 @@ export class AuthService {
     await this.mailerService.sendOtpForEmail(email, otpCode);
     return {
       message: AuthMessages.SentOtpCode,
+    };
+  }
+  async checkOtp(dto: CheckOtpDto) {
+    const { email, otpCode } = dto;
+    const user = await this.userRepository.findOne({ where: { email } });
+    if (!user) throw new NotFoundException(NotFoundMessage.user);
+    // verify otp
+    await this.otpService.verify(user.email, otpCode);
+    // update user
+    if (!user.isEmailVerifyed)
+      await this.userRepository.update(
+        { id: user.id },
+        { isEmailVerifyed: true },
+      );
+    // create jwt token
+    const jwtToken = await this.tokenService.generateJwtToken({
+      userId: user.id,
+    });
+    return {
+      message: AuthMessages.Login,
+      jwtToken,
     };
   }
 }
