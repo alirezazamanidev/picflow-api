@@ -5,6 +5,7 @@ import { TypeOrmDbConfig } from './configs/typerorm.config';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from './configs/redis.config';
+import { PostModule } from './modules/post/post.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { RedisModule } from './configs/redis.config';
     RedisModule.forRoot(),
     AuthModule,
     UserModule,
+    PostModule,
   
   ],
 })

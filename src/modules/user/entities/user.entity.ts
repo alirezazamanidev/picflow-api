@@ -1,7 +1,9 @@
+import { PostEntity } from 'src/modules/post/entities/post.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -29,4 +31,6 @@ export class UserEntity {
   created_at: Date;
   @UpdateDateColumn()
   updated_at: Date;
+  @OneToMany(() => PostEntity, (post) => post.user, { cascade: true })
+  posts: PostEntity[];
 }
