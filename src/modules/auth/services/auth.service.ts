@@ -94,4 +94,13 @@ export class AuthService {
       jwtToken,
     };
   }
+  async validateJwtToken(token: string) {
+    const { userId } = await this.tokenService.verifyJwtToken(token);
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      select: ['id', 'fullname', 'email', 'isEmailVerifyed', 'private', 'role','created_at'],
+    });
+    if(!user) throw new NotFoundException(NotFoundMessage.user);
+    return user
+  }
 }

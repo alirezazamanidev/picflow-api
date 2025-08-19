@@ -25,7 +25,7 @@ export class AuthController {
     return this.authService.signIn(dto);
   }
 
-    @ApiOperation({ summary: 'check otp and verify email' })
+  @ApiOperation({ summary: 'check otp and verify email' })
   @HttpCode(HttpStatus.OK)
   @ApiConsumes(ContentTypeEnum.Form, ContentTypeEnum.Json)
   @Post('check-otp')

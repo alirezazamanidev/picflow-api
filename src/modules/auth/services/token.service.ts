@@ -14,4 +14,11 @@ export class TokenService {
         }
 
     }
+    async verifyJwtToken(token: string):Promise<JwtPayload> {
+        try {
+            return this.jwtService.verify(token, { secret: process.env.JWT_SECRET_KEY });
+        } catch (error) {
+            throw new UnauthorizedException(error.message);
+        }
+    }
 }

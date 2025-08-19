@@ -6,6 +6,7 @@ export enum AuthMessages {
     OtpCodeInvalid='کد تایید صحییح نمیباشد!',
     SentOtpCode='ک تایید با موفقیت ارسال شد!',
     InvalidCredentials='یوزنیم یا پسورد نادرست است!',
+    LoginAgain='لطفا دوباره وارد شوید!',
     Login='ورود با موفقیت انجام شد!'
 }
 export enum NotFoundMessage{

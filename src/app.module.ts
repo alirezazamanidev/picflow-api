@@ -13,8 +13,8 @@ import { RedisModule } from './configs/redis.config';
       useClass: TypeOrmDbConfig,
     }),
     RedisModule.forRoot(),
-    UserModule,
     AuthModule,
+    UserModule,
   
   ],
 })
