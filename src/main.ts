@@ -11,16 +11,14 @@ async function bootstrap() {
   });
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new AllExceptionFilter());
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-    }),
-  );
+    app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    // forbidNonWhitelisted: true,
+    transform: true,
+    transformOptions: {
+      enableImplicitConversion: true
+    }
+  }));
   //swagger config
   SwaggerConfig(app);
   await app.listen(process.env.APP_PORT ?? 3000, () => {

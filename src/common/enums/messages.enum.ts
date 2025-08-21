@@ -13,5 +13,6 @@ export enum NotFoundMessage{
     user='اکانت شما یافت نشد!'
 }
 export enum PublicMessages{
+    PostCreated='پست با موفقیت ایجاد شد!'
 
 }

@@ -17,6 +17,7 @@ import { PostModule } from './modules/post/post.module';
     AuthModule,
     UserModule,
     PostModule,
+
   
   ],
 })

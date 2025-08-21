@@ -18,5 +18,11 @@ declare namespace NodeJS {
     SMTP_SECURE: boolean;
     SMTP_PASSWORD: string;
     SMTP_USERNAME: string;
+    // minio
+    MINIO_BUCKET_NAME: string;
+    MINIO_ENDPOINT: string;
+    MINIO_ACCESS_KEY: string;
+    MINIO_SECRET_KEY: string;
+    MINIO_PORT: number;
   }
 }
